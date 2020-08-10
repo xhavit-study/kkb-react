@@ -1,6 +1,4 @@
-import {isArray} from "util";
-
-import {TEXT} from "./const";
+import { TEXT } from "./const";
 
 // ! vnode  虚拟dom对象
 // ! node  真实dom
@@ -10,12 +8,11 @@ function render(vnode, container) {
   const node = createNode(vnode);
   // 再把node插入container
   container.appendChild(node);
-  console.log("vnode", vnode, container); //sy-log
 }
 
 // 创建node
 function createNode(vnode) {
-  const {type, props} = vnode;
+  const { type, props } = vnode;
   let node = null;
   // 判断节点类型
   if (type === TEXT) {
@@ -40,7 +37,7 @@ function createNode(vnode) {
 
 // 类组件
 function updateClassComponent(vnode) {
-  const {type, props} = vnode;
+  const { type, props } = vnode;
   let cmp = new type(props);
   const vvnode = cmp.render();
   // 生成node节点
@@ -50,7 +47,7 @@ function updateClassComponent(vnode) {
 
 // 函数组件
 function updateFunctionComponent(vnode) {
-  const {type, props} = vnode;
+  const { type, props } = vnode;
   const vvnode = type(props);
   // 生成node节点
   const node = createNode(vvnode);
@@ -60,8 +57,8 @@ function updateFunctionComponent(vnode) {
 // 更新属性值，如className、nodeValue等
 function updateNode(node, nextVal) {
   Object.keys(nextVal)
-    .filter(k => k !== "children")
-    .forEach(k => {
+    .filter((k) => k !== "children")
+    .forEach((k) => {
       node[k] = nextVal[k];
     });
 }
@@ -80,4 +77,4 @@ function reconcileChildren(children, node) {
   }
 }
 
-export default {render};
+export default { render };

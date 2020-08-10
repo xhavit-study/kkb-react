@@ -1,4 +1,4 @@
-import {TEXT} from "./const";
+import { TEXT } from "./const";
 
 // 创建react element，并返回
 function createElement(type, config, ...children) {
@@ -6,16 +6,27 @@ function createElement(type, config, ...children) {
     delete config.__self;
     delete config.__source;
   }
+
   // 这个地方我们自己写的没有考虑细节，比如key、ref等
   const props = {
     ...config,
-    children: children.map(child =>
+    children: children.map((child) =>
       typeof child === "object" ? child : createTextNode(child)
-    )
+    ),
   };
+
+  if (type && type.defaultProps) {
+    const defaultProps = type.defaultProps;
+    for (const propName in defaultProps) {
+      if (props[propName] === undefined) {
+        props[propName] = defaultProps[propName];
+      }
+    }
+  }
+
   return {
     type,
-    props
+    props,
   };
 }
 
@@ -24,11 +35,11 @@ function createTextNode(text) {
     type: TEXT,
     props: {
       children: [],
-      nodeValue: text
-    }
+      nodeValue: text,
+    },
   };
 }
 
 export default {
-  createElement
+  createElement,
 };
