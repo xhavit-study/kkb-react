@@ -1,4 +1,4 @@
-import {TEXT, PLACEMENT} from "./const";
+import { TEXT, PLACEMENT } from "./const";
 
 // 下一个单元任务  fiber
 let nextUnitOfWork = null;
@@ -32,15 +32,15 @@ function render(vnode, container) {
   wipRoot = {
     node: container,
     props: {
-      children: [vnode]
-    }
+      children: [vnode],
+    },
   };
   nextUnitOfWork = wipRoot;
 }
 
 // 创建node
 function createNode(vnode) {
-  const {type, props} = vnode;
+  const { type, props } = vnode;
   let node = null;
   // 判断节点类型
   if (type === TEXT) {
@@ -64,18 +64,16 @@ function createNode(vnode) {
 }
 
 // 类组件
-function updateClassComponent(vnode) {
-  const {type, props} = vnode;
+function updateClassComponent(fiber) {
+  const { type, props } = fiber;
   let cmp = new type(props);
-  const vvnode = cmp.render();
-  // 生成node节点
-  const node = createNode(vvnode);
-  return node;
+  const children = [cmp.render()];
+  reconcileChildren(fiber, children);
 }
 
 // 函数组件
 function updateFunctionComponent(fiber) {
-  const {type, props} = fiber;
+  const { type, props } = fiber;
   const children = [type(props)];
   reconcileChildren(fiber, children);
 }
@@ -83,8 +81,8 @@ function updateFunctionComponent(fiber) {
 // 更新属性值，如className、nodeValue等
 function updateNode(node, nextVal) {
   Object.keys(nextVal)
-    .filter(k => k !== "children")
-    .forEach(k => {
+    .filter((k) => k !== "children")
+    .forEach((k) => {
       node[k] = nextVal[k];
     });
 }
@@ -118,7 +116,7 @@ function reconcileChildren(workInProgressFiber, children) {
       node: null,
       base: null,
       return: workInProgressFiber,
-      effectTag: PLACEMENT
+      effectTag: PLACEMENT,
     };
     // 形成一个链表结构
     if (i === 0) {
@@ -135,14 +133,14 @@ function updateHostComponent(fiber) {
     fiber.node = createNode(fiber);
   }
   // 协调子元素
-  const {children} = fiber.props;
+  const { children } = fiber.props;
   reconcileChildren(fiber, children);
   // console.log("fiber-----", fiber); //sy-log
 }
 
 function performUnitOfWork(fiber) {
   //执行当前任务 更新当前fiber节点
-  const {type} = fiber;
+  const { type } = fiber;
   if (typeof type === "function") {
     // class function
     type.prototype.isReactComponent
@@ -215,4 +213,4 @@ function commitWorker(fiber) {
   commitWorker(fiber.sibling);
 }
 
-export default {render};
+export default { render };
